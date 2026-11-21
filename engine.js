@@ -1,6 +1,7 @@
 // קריאה ביום של סהר. השיעור נטען מ-days/dNNN.json לפי ?d=N (בלי d: השיעור האחרון).
-// FORM: טופס גוגל שאליו נשלחות התשובות. כל עוד הוא ריק, התוצאה נשמרת רק באייפד.
-const FORM = { url: "", f: { name: "", day: "", score: "", total: "", detail: "", topic: "" } };
+// FORM: טופס גוגל 1ehaRiq6VoRiX5F14oSNqiBe8id9B1Z0I_rqJVwir4a8 שאליו נשלחות התשובות.
+const FORM = { url: "https://docs.google.com/forms/d/e/1FAIpQLSdquUCjPDaR3wC7msivFJ47ixpv1po8QLmr3js8N9Ep6L2PcQ/formResponse",
+  f: { name: "entry.716700992", day: "entry.1026312366", score: "entry.1514057559", total: "entry.590761496", detail: "entry.423876772", topic: "entry.1033504668" } };
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
