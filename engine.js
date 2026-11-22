@@ -132,7 +132,7 @@ function place(c, Q) {
 function finish() {
   $("#txt").classList.remove("findmode");
   const score = res.filter(Boolean).length, total = D.questions.length;
-  const stk = get("sahar-stickers", {}); stk[D.n] = D.sticker; put("sahar-stickers", stk);
+  if (!window.DEMO) { const stk = get("sahar-stickers", {}); stk[D.n] = D.sticker; put("sahar-stickers", stk) }
   burst(160);
   $("#panel").innerHTML = `<div class="card done">
      <div style="font-size:32px;font-weight:700">סִיַּמְתָּ אֶת הַקְּרִיאָה שֶׁל הַיּוֹם!</div>
@@ -143,7 +143,9 @@ function finish() {
      ${D.next && D.next.length ? `<hr style="border:none;border-top:2px dashed var(--line);margin:18px 0">
      <div style="font-size:26px;font-weight:700">עַל מָה תִּרְצֶה לִקְרֹא מָחָר? 🤔</div>
      <div class="topics">${D.next.map((t, i) => `<button class="topic" data-i="${i}"><span class="e">${t[0]}</span>${esc(t[1])}</button>`).join("")}</div>` : ""}
-     <div class="nav"><button class="btn go" id="send">📬 שְׁלַח לְאַבָּא</button><a class="btn ghost" href="./" style="text-decoration:none">🏠 לָאַלְבּוֹם</a></div>
+     <div class="nav"><button class="btn go" id="send">📬 שְׁלַח לְאַבָּא</button>${window.DEMO
+       ? `<a class="btn ghost" href="${location.href}" style="text-decoration:none">🔁 מֵהַהַתְחָלָה</a>`
+       : `<a class="btn ghost" href="./" style="text-decoration:none">🏠 לָאַלְבּוֹם</a>`}</div>
      <div class="fb ok" id="sent"></div></div>`;
   document.querySelectorAll(".topic").forEach(b => b.onclick = () => {
     document.querySelectorAll(".topic").forEach(x => x.classList.remove("sel")); b.classList.add("sel");
@@ -153,6 +155,10 @@ function finish() {
 }
 
 async function send(score, total) {
+  if (window.DEMO) { // דוגמה: שום דבר לא נשלח לטופס ושום דבר לא נשמר
+    $("#sent").textContent = "זוֹ רַק דֻּגְמָה, שׁוּם דָּבָר לֹא נִשְׁלַח 🙂";
+    $("#send").textContent = "📬 נִשְׁלַח"; $("#send").disabled = true; burst(120); return;
+  }
   const detail = D.questions.map((q, i) => `${i + 1}. ${res[i] ? "✓" : "✗ (הצליח בניסיון נוסף)"} ${q.q}`).join("\n");
   put("sahar-last", { n: D.n, score, total, topic, at: Date.now() });
   if (FORM.url) {
@@ -168,7 +174,7 @@ async function send(score, total) {
 (async () => {
   try {
     const idx = await (await fetch("days/index.json", { cache: "no-store" })).json();
-    const want = +new URLSearchParams(location.search).get("d") || idx.days[idx.days.length - 1].n;
+    const want = +new URLSearchParams(location.search).get("d") || (window.DEMO ? 1 : idx.days[idx.days.length - 1].n);
     D = await (await fetch(`days/d${String(want).padStart(3, "0")}.json`, { cache: "no-store" })).json();
     document.title = "קריאה ביום: " + D.title;
     layout();
